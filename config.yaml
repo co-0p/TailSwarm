@@ -1,0 +1,21 @@
+tailnet-name: "<name-of-yourtailnet>.ts.net"
+tailscale-policy-file: "tailscale/policy.hujson"
+docker-user: docko
+docker-swarm-stacks:
+
+
+environments:
+# If you change environment names here, also adjust tags and rules in `tailscale/policy.hujson`
+  - name: testing-environment
+    nodes:
+      - name: Bulbasaur
+        manager: true
+        stack:
+          - webserver
+      - name: Ivysaur
+        labels:
+          - webserver
+        #   - database
+        # internal-services:
+        #   - name: database
+        #     port: 5432

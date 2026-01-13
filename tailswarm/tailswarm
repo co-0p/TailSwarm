@@ -1,0 +1,8 @@
+#!/bin/bash
+set -euo pipefail
+
+# Make this script run relative to itself
+cd "$(dirname "${BASH_SOURCE[0]}")"
+
+# Call the python stuff
+python tailswarm.py "${@:1}" || python3 tailswarm.py "${@:1}"
