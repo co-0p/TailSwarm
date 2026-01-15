@@ -1,12 +1,7 @@
 import click
+from utils import helpers
 
 
 @click.command()
-@click.option(
-    "--environment", 
-    required=False, 
-    help="Defaults to current environment (if exists)"
-)
 def find_manager():
-    # TODO
-    pass
+    return helpers.get_manager_name()

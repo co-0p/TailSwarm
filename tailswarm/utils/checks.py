@@ -1,22 +1,11 @@
-def assert_tailscale_installed_and_connected():
-    pass
+import click
+from utils import helpers
+
+def assert_am_manager():
+    if not helpers.am_manager():
+        raise click.ClickException("This can only be run from a manager node")
 
 
-def assert_docker_installed():
-    pass
-
-
-def assert_swarm_initialized():
-    pass
-
-
-def assert_is_manager():
-    pass
-
-
-def assert_is_worker():
-    pass
-
-
-def assert_can_find_node():
-    pass
+def assert_am_worker():
+    if helpers.am_manager():
+        raise click.ClickException("This can only be run from a worker node")

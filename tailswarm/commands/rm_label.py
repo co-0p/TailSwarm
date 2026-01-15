@@ -1,17 +1,24 @@
 import click
+import subprocess
 
 
 @click.command()
 @click.option(
-    "--node_name", 
+    "--node-name", 
     required=True, 
-    help="Name of the node to remove label from"
+    help="Name of the node to add label to"
 )
 @click.option(
     "--label", 
     required=True,
-    help="Label name to remove"
+    help="Label name to add"
 )
-def rm_label():
-    # TODO
-    pass
+def rm_label(node_name, label):
+    subprocess.run([
+        "docker",
+        "node",
+        "update",
+        "--label-rm",
+        f"{label}=true",
+        node_name
+    ])

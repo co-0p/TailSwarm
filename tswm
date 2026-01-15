@@ -5,4 +5,4 @@ set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 # Call the python stuff
-python tailswarm.py "${@:1}" || python3 tailswarm.py "${@:1}"
+python tailswarm/tailswarm.py "${@:1}" || python3 tailswarm/tailswarm.py "${@:1}"

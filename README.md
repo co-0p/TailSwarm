@@ -26,7 +26,7 @@ Scripts and configs to make tailscale and docker swarm play nicely together. Doc
 **Connecting additional nodes**
 
 1. Visit the admin dashboard from a development machine on your tailnet. You can get this from the CLI with `tailswarm admin`
-2. On a fresh server or VM (running Ubuntu or Debain), run as root the following `curl -sfL http://example.com/tailswarm | bash -s -- join-web`
+2. On a fresh server or VM (running Ubuntu or Debain), run as root the following `curl -sfL http://example.com/tailswarm | bash -s -- join`
 
 
 ## Concepts
@@ -42,7 +42,7 @@ Scripts and configs to make tailscale and docker swarm play nicely together. Doc
 
 ## FAQ
 
-- "Is it ready for production?"- No!
+- "Is it ready for production?"- Probably not
 - "Why not use K8s?" - Yes, why not? K8s (or K3s or whatever) are great, but they can be a lot to manage, and there is a fair learning curve. If you have a good handle on Docker and Tailscale already, and you plan on managing a smallish number or nodes, then maybe TailSwarm makes sense.
 - "Why not Kamal, Dokku, etc." - Again, all great and easy to use, but if you want some Docker Swarm features not supported then you make like to start with TailSwarm.
 - "Isn't Docker Swarm dead" - Not really, it's true that it's not actively being developed much these days, but it's in a battle tested and robust state of maintanance. Many enterprises still use it so it's quite unlikely that Docker will cease support. 

@@ -1,4 +1,5 @@
 import click
+import subprocess
 
 
 @click.command()
@@ -13,5 +14,11 @@ import click
     help="Label name to add"
 )
 def add_label(node_name, label):
-    # TODO
-    print(node_name, label)
+    subprocess.run([
+        "docker",
+        "node",
+        "update",
+        "--label-add",
+        f"{label}=true",
+        node_name
+    ])

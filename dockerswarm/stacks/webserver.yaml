@@ -10,4 +10,7 @@ services:
       restart_policy:
         condition: on-failure
 
+  tailswarm:
+    redeploy_strategy: stable
+
 

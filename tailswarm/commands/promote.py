@@ -1,4 +1,7 @@
 import click
+import subprocess
+
+from utils import checks
 
 
 @click.command()
@@ -8,5 +11,5 @@ import click
     help="Name of the node to promote to manager"
 )
 def promote(node_name):
-    # TODO
-    pass
+    checks.assert_am_manager()
+    subprocess.run(["docker", "node", "promote", node_name])
