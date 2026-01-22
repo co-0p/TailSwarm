@@ -1,14 +1,13 @@
 import click
 import subprocess
 
-from utils import helpers
 from utils.checks import assert_am_manager
 from utils.helpers import get_self_name
 
 
 @click.command()
 @click.option(
-    "--node_name", 
+    "--node-name",
     required=False, 
     help="Name of the node to demote from manager"
 )

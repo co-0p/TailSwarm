@@ -6,7 +6,7 @@ from utils import checks
 
 @click.command()
 @click.option(
-    "--node_name", 
+    "--node-name",
     required=True, 
     help="Name of the node to promote to manager"
 )
