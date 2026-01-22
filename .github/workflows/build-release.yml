@@ -12,31 +12,31 @@ jobs:
       contents: write  # Required for release creation [page:1]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'  # Adjust Python version as needed [web:10]
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'  # Adjust Python version as needed [web:10]
 
-    - name: Install Python dependencies
-      working-directory: tailswarm
-      run: |
-        python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        pip install pyinstaller  # Install PyInstaller [web:1][web:7]
+      - name: Install Shiv
+        run: pip install shiv
 
-    - name: Build single-file binary
-      working-directory: tailswarm
-      run: |
-        pyinstaller --onefile tailswarm.py tailswarm
-        # Output binary: dist/main (Linux) or dist/main.exe (Windows) [web:1]
+      - name: Build executable pyz
+        run: |
+          pip install --target ./site-packages -r tailswarm_src/requirements.txt
+          cp -r ./tailswarm_src/* ./site-packages/ 
+          shiv \
+            --site-packages ./site-packages/ \
+            -e tailswarm:cli -o \
+            "./tailswarm" \
+            -p '/usr/bin/env python3' --compressed
 
-    - name: Create Release
-      uses: softprops/action-gh-release@v2
-      with:
-        files: dist/main*  # Matches the built binary [page:1][web:11]
-        generate-release-notes: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: tailswarm
+          generate-release-notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
