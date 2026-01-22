@@ -23,18 +23,20 @@ jobs:
     - name: Install Shiv
       run: pip install shiv
 
-    - name: Build single-file Python app
-      working-directory: tailswarm
+    - name: Build executable pyz
       run: |
-        shiv -e tailswarm.py \
-        -o dist/tailswarm.pyz \
-        -p '/usr/bin/env python3' \
-        -r requirements.txt --compressed
+        pip install --target ./site-packages -r tailswarm_src/requirements.txt
+        cp -r ./tailswarm_src/* ./site-packages/ 
+        shiv \
+          --site-packages ./site-packages/ \
+          -e tailswarm:cli -o \
+          "./tailswarm" \
+          -p '/usr/bin/env python3' --compressed
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        files: tailswarm/dist/tailswarm.pyz  # Matches the built binary [page:1][web:11]
+        files: tailswarm
         generate-release-notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
