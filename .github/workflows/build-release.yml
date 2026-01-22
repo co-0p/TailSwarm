@@ -20,23 +20,21 @@ jobs:
       with:
         python-version: '3.12'  # Adjust Python version as needed [web:10]
 
-    - name: Install Python dependencies
-      working-directory: ./tailswarm
-      run: |
-        python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        pip install pyinstaller  # Install PyInstaller [web:1][web:7]
+    - name: Install Shiv
+      run: pip install shiv
 
-    - name: Build single-file binary
-      working-directory: ./tailswarm
+    - name: Build single-file Python app
+      working-directory: tailswarm
       run: |
-        pyinstaller --onefile tailswarm.py
-        # Output binary: dist/main (Linux) or dist/main.exe (Windows) [web:1]
+        shiv -e tailswarm.py \
+        -o dist/tailswarm.pyz \
+        -p '/usr/bin/env python3' \
+        -r requirements.txt --compressed
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        files: tailswarm/dist/tailswarm  # Matches the built binary [page:1][web:11]
+        files: tailswarm/dist/tailswarm.pyz  # Matches the built binary [page:1][web:11]
         generate-release-notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
