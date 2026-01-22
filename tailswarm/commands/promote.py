@@ -12,4 +12,4 @@ from utils import checks
 )
 def promote(node_name):
     checks.assert_am_manager()
-    subprocess.run(["docker", "node", "promote", node_name])
+    subprocess.run(["docker", "node", "promote", node_name], shell=True)

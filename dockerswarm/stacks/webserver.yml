@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  web:
+    user: "1000:1000"
+    image: nginx:alpine
+    ports:
+      - "8080:8080"
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+
+

@@ -1,5 +1,5 @@
 import os
-from lib.bottle import route, template, static_file
+from bottle import route, template, static_file
 
 import admin.api.api_routes
 import admin.dashboard.dashboard_routes

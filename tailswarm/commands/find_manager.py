@@ -1,7 +1,13 @@
 import click
-from utils import helpers
+
+from utils.helpers import get_manager_nodes_in_environment
 
 
 @click.command()
-def find_manager():
-    return helpers.get_manager_name()
+@click.option(
+    "--environment",
+    required=True,
+    help="Name of the environment"
+)
+def find_manager(environment):
+    return get_manager_nodes_in_environment(environment)

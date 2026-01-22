@@ -1,5 +1,0 @@
-tailnet-name: "<name-of-yourtailnet>"
-tailscale-policy-file: "tailscale/policy.hujson"
-
-docker-swarm-stacks: dockerswarm/stacks
-docker-user: docko

@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  caddy:
+    user: "1000:1000"
+    image: caddy:latest
+    # Define the caddyfile inline like this to avoid needing to version config imports, far more convenient.
+    command: >
+      sh -c 'cat << "EOF" | caddy run --config - --adapter caddyfile
+        example.com
+        {
+          reverse_proxy webserver:8080
+        }
+      EOF'
+    deploy:
+      mode: global
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+      placement:
+        constraints:
+          - node.labels.backend-node == true
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    ports:
+      - "80:80/tcp"
+      - "443:443/tcp"
+    networks:
+      - caddy
+
+networks:
+  caddy:
+    driver: overlay
+    attachable: true
+volumes:
+  caddy_data:
+  caddy_config:

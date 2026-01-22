@@ -19,3 +19,9 @@ venv.bak/
 .DS_Store
 
 .idea
+.vs_code
+.vscode
+
+build/
+dist/
+*.spec

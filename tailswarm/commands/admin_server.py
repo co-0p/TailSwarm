@@ -1,5 +1,5 @@
 import click
-from lib.bottle import route, run
+from bottle import route, run
 from utils import checks
 
 
