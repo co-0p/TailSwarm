@@ -36,7 +36,7 @@ jobs:
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        files: dist/main*  # Matches the built binary [page:1][web:11]
+        files: tailswarm/dist/tailswarm  # Matches the built binary [page:1][web:11]
         generate-release-notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
