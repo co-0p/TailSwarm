@@ -1,9 +1,0 @@
-#!/bin/bash
-set -euo pipefail
-
-# Make this script run relative to itself
-cd "$(dirname "${BASH_SOURCE[0]}")"
-
-# Call the python stuff
-source tailswarm/venv/bin/activate
-python3 tailswarm/tailswarm.py "${@:1}"
