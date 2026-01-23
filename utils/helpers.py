@@ -6,6 +6,12 @@ import click
 import yaml
 
 
+def simple_run_remote(cmd, node):
+    run = subprocess.run(
+        ['ssh',  "-o", "StrictHostKeyChecking=no", f'root@{node}', 'bash', '-c', f"'{cmd}'"]
+    )
+    return run.returncode
+
 def run_remote(cmd, node):
     result = subprocess.run(
         ['ssh',  "-o", "StrictHostKeyChecking=no", f'root@{node}', 'bash', '-c', f"'{cmd}'"],
@@ -59,7 +65,7 @@ def am_manager():
     return False
 
 def get_tailswarm_config():
-    with open('tailswarm.yaml', 'r') as file:
+    with open('tailswarm.yml', 'r') as file:
         config = yaml.safe_load(file)
     return config
 

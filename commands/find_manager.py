@@ -10,4 +10,6 @@ from utils.helpers import get_manager_nodes_in_environment
     help="Name of the environment"
 )
 def find_manager(environment):
-    return get_manager_nodes_in_environment(environment)
+    managers = get_manager_nodes_in_environment(environment)
+    if len(managers):
+        click.echo(managers.pop())
