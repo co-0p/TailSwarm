@@ -29,7 +29,10 @@ jobs:
       - name: Build executable pyz
         run: |
           pip install --target ./site-packages -r ./requirements.txt
-          cp -r ./* ./site-packages/ 
+          cp -r ./admin ./site-packages/ 
+          cp -r ./commands ./site-packages/ 
+          cp -r ./utils ./site-packages/ 
+          cp -r ./tailswarm.py ./site-packages/ 
           shiv \
             --site-packages ./site-packages/ \
             -e tailswarm:cli -o \
