@@ -1,0 +1,51 @@
+name: Build and Release Binary
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Shiv
+        run: pip install shiv
+
+      - name: Build executable pyz
+        run: |
+          pip install --target ./site-packages -r ./requirements.txt
+          cp -r ./admin ./site-packages/ 
+          cp -r ./commands ./site-packages/ 
+          cp -r ./utils ./site-packages/ 
+          cp -r ./tailswarm.py ./site-packages/ 
+          shiv \
+            --site-packages ./site-packages/ \
+            -e tailswarm:cli -o \
+            "./tailswarm" \
+            -p '/usr/bin/env python3' --compressed
+
+      - name: Create & Upload Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.1.${{ github.run_number }}
+          name: Release v0.1.${{ github.run_number }}
+          files: tailswarm
+          generate-release-notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
