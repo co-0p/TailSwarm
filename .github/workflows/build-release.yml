@@ -35,7 +35,7 @@ jobs:
             -e tailswarm:cli -o \
             "./tailswarm" \
             -p '/usr/bin/env python3' --compressed
-          
+
       - name: Create & Upload Release
         uses: softprops/action-gh-release@v2
         with:
