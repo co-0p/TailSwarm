@@ -40,4 +40,8 @@ def init():
     if len(existing_manager_nodes) == 0:
         click.echo(f"Found no existing manager nodes in environment {current_environment}")
         click.echo("Bootstrapping new cluster...")
+    else:
+        click.echo("Run this command from your dev machine to get a docker join command. And then run it here.")
+        click.echo(f"ssh root@{existing_manager_nodes.pop()} docker swarm join-token worker")
+
 

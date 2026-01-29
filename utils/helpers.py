@@ -60,7 +60,7 @@ def am_manager():
     my_address = data["Swarm"]["NodeAddr"]
     manager_addresses = data.get("Swarm", {}).get("RemoteManagers") or []
     for manager in manager_addresses:
-        if manager["Addr"].contains(my_address):
+        if my_address in manager["Addr"]:
             return True
     return False
 

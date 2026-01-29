@@ -1,4 +1,6 @@
+import os
 import subprocess
+import sys
 from zoneinfo import available_timezones
 
 import click
@@ -21,6 +23,7 @@ def deploy(environment):
     with open('tailswarm.yml', 'r') as file:
         config = yaml.safe_load(file)
 
+    docker_stacks_dir = config.get("docker-swarm-stacks-directory")
     environment_spec = config.get("environments", {}).get(environment, {})
     nodes = environment_spec.get("nodes", [])
     stacks = environment_spec.get("stacks", [])
@@ -31,21 +34,12 @@ def deploy(environment):
 
     click.echo(f"Deploying to environment {environment} via manager {manager}")
 
-    # Copy over data
-    # click.echo("Recopying dockerswarm directory on manager nodes..")
-    # run_remote("rm -rf ~/dockerswarm", manager)
-    # args = ["scp", "-o", "StrictHostKeyChecking=no", "-r", "dockerswarm/", f"root@{manager}:~/dockerswarm"]
-    # subprocess.run(
-    #     args
-    # )
-
     # Labels
     environment_node_labels = get_all_node_labels(environment)
-    # print(environment_node_labels)
 
     for node in nodes:
         node_name = node.get("name")
-        desired_stack_labels = set(node.get("deploy", []))
+        desired_stack_labels = set(node.get("deploy-labels", []))
         existing_stack_labels = environment_node_labels[node_name]
 
         rm_stack_labels = existing_stack_labels.difference(desired_stack_labels)
@@ -68,17 +62,43 @@ def deploy(environment):
         # ]
         # print(" ".join(cmd))
         # print(docker_run(" ".join(cmd), manager))
-        cmd = " ".join([
-            "cat", f"dockerswarm/stacks/{stack}.yml", "|", \
-            "ssh", f"root@{manager}", "docker", "stack", "deploy", "--prune", \
-            "--detach=true", "--with-registry-auth", \
-            "-c", "-", stack
-        ])
-        print(cmd)
-        run = subprocess.run(cmd, shell=True)
-        if run.returncode != 0:
-            click.echo(f"Error This Deploy Did Not Succeed ({stack})")
+        stack_path = os.path.join(docker_stacks_dir, f"{stack.strip()}.yml")
+        # cmd = " ".join([
+        #     "cat", stack_path, "|", \
+        #     "ssh", f"root@{manager}", "docker", "stack", "deploy", "--prune", \
+        #     "--detach=true", "--with-registry-auth", \
+        #     "-c", "-", stack
+        # ])
+        # print(cmd)
+        # run = subprocess.run(cmd, shell=True)
+
+
+        args = [
+            "docker", "stack", "deploy", "--prune", \
+            "--detach=false", "--with-registry-auth", \
+            "-c", stack_path, stack
+        ]
+        # run = subprocess.run(
+        #     args,
+        #     capture_output=True, text=True, check=True,
+        #     env={**os.environ, "DOCKER_HOST": f"ssh://root@{node}" }
+        # )
+        print(" ".join(args))
+        try:
+            run = subprocess.run(
+                args,  # Replace with your command and arguments
+                check=True,                        # Raise CalledProcessError on non-zero exit
+                stdout=sys.stdout, #subprocess.PIPE,            # Capture stdout
+                stderr=subprocess.PIPE,             # Capture stderr
+                env={**os.environ, "DOCKER_HOST": f"ssh://root@{manager}" }
+            )
+        except subprocess.CalledProcessError as e:
             deploy_successful = False
+            print("Error occurred:", e.stderr.decode())
+            click.echo(f"Error This Deploy Did Not Succeed ({stack})")
+
+        click.echo("")
+
     click.echo("Stacks deployed")
     if not deploy_successful:
         click.echo("Not everything went right, check logs.")
