@@ -28,8 +28,8 @@ jobs:
 
       - name: Build executable pyz
         run: |
-          pip install --target ./site-packages -r tailswarm_src/requirements.txt
-          cp -r ./tailswarm_src/* ./site-packages/ 
+          pip install --target ./site-packages -r ./requirements.txt
+          cp -r ./* ./site-packages/ 
           shiv \
             --site-packages ./site-packages/ \
             -e tailswarm:cli -o \
