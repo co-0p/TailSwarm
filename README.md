@@ -1,27 +1,39 @@
-# TailSwarm 🐳🐝
+# TailSwarm
 
-Scripts and configs to make tailscale and docker swarm play nicely together. Docker Swarm is almost great, and Tailscale + some scripts can get it there.
+The TailSwarm cli is a tool to make working in a Docker Swarm + Tailscale infrastructure stack easy and declarative.
 
-## The Opinionated Stack
-- Dockerswarm to run containers on your nodes
-- Tailscale to manage and connect between nodes
-- `tailswarm` config files and CLI tool to set it up and make all the bits work nicely (requires Python3)
+> Note: This is a very early release, probably not ready for production use. I am currently dogfooding it for my own project, but please be careful with it.
+> Please assume that the cli or config interface could change.
 
-# Using it
+You can find the latest build from the [GitHub releases section](https://github.com/co-0p/TailSwarm/releases).
+Requirements, be on a nix machine with Python 3 installed.
 
-## Deploying
-When you run `tailswarm deploy --environment testing-environment`, the cli will look at your `tailswarm.yaml` file,
-and deploy what you have defined inside of the defined environment. Stacks are compose files located at `dockerswarm/stacks`
+Further documentation coming soon.
 
-**Remember:** Stacks are deployed to the swarm before the deploy labels are changed, and deploy labels are not changed atomically.
+### The Opinionated Stack
+- The `tailswarm` CLI and config file, as an abstraction layer lets you manage your Swarm declaratively and easily
+- [Docker Swarm mode](https://docs.docker.com/engine/swarm/) to orchestrate containers on your nodes
+- [Tailscale](https://tailscale.com/) to connect and discover nodes, segregate environments (testing, prod, etc.),
+and streamline aspects of managing Swarm
 
-# TODO
-- Compute changes
-- Deploy single stack
-- Status
-- Show logs
-- Make pretty
-- Promote from dev machine
-- Command to copy files to a node
-- Set a secret
-- Self upgrade
+### Why?
+
+Docker Swarm Mode is an awesome tool, it is lighter and simpler than K8s, and is very approachable for anyone familiar with Docker.
+It should have become the go-to tool for individuals or small teams who need to run a handful of containers on a handful of nodes.
+In my opinion it has been held back for usability reasons, the functionality is all there, but to make it usable requires writing
+a bunch of custom scripts and managing nodes manually, this is where it falls behind compared to newer options like Coolify, Kamal, etc.
+
+But by supercharging it with Tailscale, a clean CLI, and a declarative yaml config file, we solve most of these issues and can easily manage
+multienvironment projects with ease, and get to use a powerful battle tested orchestrator.
+
+
+### Todo List
+- [ ] Compute changes before a deployment
+- [ ] Status command
+- [ ] Show logs command
+- [ ] Make beautiful
+- [ ] Cleaner interaction from both manager nodes and dev machines
+- [ ] Command to copy files to a node
+- [ ] Set swarm secrets
+- [ ] Self upgrading script
+- [ ] Create example repository
