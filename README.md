@@ -26,6 +26,18 @@ a bunch of custom scripts and managing nodes manually, this is where it falls be
 But by supercharging it with Tailscale, a clean CLI, and a declarative yaml config file, we solve most of these issues and can easily manage
 multienvironment projects with ease, and get to use a powerful battle tested orchestrator.
 
+### Concepts
+
+- We define a Tailscale tag for each environment `testing-environment`, `production-envrionment`, etc.
+- We also define a tag for the developer's computer `dev-machine`, and for a CI job `ci-runner`
+- Tailscale ACLs and SSH rules are set for the following:
+  - Nodes with environment tags can access each other (but not by SSH)
+  - `dev-machine` and `ci-runner` nodes can access all environment nodes (including by SSH)
+- Swarm nodes connect over the Tailnet
+- `tailswarm.yml` can be used to define Swarm labels to nodes, enable and disable stacks, and set environment variables
+- `tailswarm` the cli uses the config file, the Tailscale cli, and Docker cli, to make everything simple 
+
+One still needs to have a basic understanding of how Swarm works to make the most of things, but no long has to manage nodes individually with the CLI
 
 ### Todo List
 - [ ] Compute changes before a deployment
