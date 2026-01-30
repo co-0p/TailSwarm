@@ -3,13 +3,16 @@ import subprocess
 import time
 
 from utils.helpers import get_self_environment, get_manager_nodes_in_environment
+from utils.checks import assert_am_not_devmachine
 
 
 @click.command()
 def init():
+    assert_am_not_devmachine()
     click.echo("Starting Node Initialization Process...")
 
     # TAILSCALE
+    click.echo()
     click.echo("Installing Tailscale...")
     subprocess.run("curl -fsSL https://tailscale.com/install.sh | sh", shell=True)
     tailscale_authkey = input("Enter your Tailscale auth key with correct environment tag: ")
@@ -26,6 +29,7 @@ def init():
     click.echo("Tailscale Installation Complete!")
 
     # DOCKER
+    click.echo()
     click.echo("Installing Docker...")
     subprocess.run("curl -sSL https://get.docker.com/ | sh", shell=True)
     subprocess.run("adduser dockeruser", shell=True)
@@ -34,12 +38,15 @@ def init():
     click.echo("Docker Installation Complete!")
 
     # JOIN or BOOTSTRAP
+    click.echo()
     click.echo("Looking for an existing Docker Swarm...")
     current_environment = get_self_environment()
     existing_manager_nodes = get_manager_nodes_in_environment(current_environment)
     if len(existing_manager_nodes) == 0:
         click.echo(f"Found no existing manager nodes in environment {current_environment}")
         click.echo("Bootstrapping new cluster...")
+        subprocess.run(f"docker swarm init --advertise-addr $(tailscale ip -4):2377 --listen-addr $(tailscale ip -4):2377")
+        click.echo("Swarm init done")
     else:
         click.echo("Run this command from your dev machine to get a docker join command. And then run it here.")
         click.echo(f"ssh root@{existing_manager_nodes.pop()} docker swarm join-token worker")

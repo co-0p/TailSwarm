@@ -21,3 +21,11 @@ def assert_on_correct_tailnet():
 
     if defined_ts_suffix != get_current_tailnet_suffic():
         raise click.ClickException("Tailnet suffix in config file does not match current Tailnet suffix")
+
+def assert_am_not_devmachine():
+    if helpers.am_devmachine()
+        raise click.ClickException("This command cannot be run on a dev machine")
+
+def assert_am_priviliged():
+    if not helpers.am_devmachine() or not helpers.am_manager():
+        raise click.ClickException("This command can only be run on a manager or a dev machine")

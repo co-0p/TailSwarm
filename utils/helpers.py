@@ -36,7 +36,7 @@ def get_self_environment():
     ).stdout)
     for tag in data["Self"]["Tags"]:
         if tag.endswith("-environment"):
-            return tag
+            return tag[4:]
     return None
 
 
@@ -64,6 +64,11 @@ def am_manager():
             return True
     return False
 
+def am_devmachine():
+    result = subprocess.run(['tailscale', 'status', '--json'], capture_output=True, text=True)
+    status_data = json.loads(result.stdout)
+    return "tag:dev-machine" in status_data["Self"]["Tags"]
+
 def get_tailswarm_config():
     with open('tailswarm.yml', 'r') as file:
         config = yaml.safe_load(file)
@@ -82,12 +87,15 @@ def get_nodes_in_environment(environment):
     return nodes
 
 def get_manager_nodes_in_environment(environment):
-    all_nodes = get_nodes_in_environment(environment)
+    result = subprocess.run(['tailscale', 'status', '--peers', '--json'],
+                            capture_output=True, text=True, check=True)
+    ts_status = json.loads(result.stdout)
     managers = set()
-    for node in all_nodes:
-        output = run_remote("docker info --format '{{.Swarm.ControlAvailable}}'", node)
-        if output.strip() == "true":
-            managers.add(node)
+    for nodekey, peer_data in ts_status["Peer"].items():
+        if f"tag:{environment}" in peer_data["Tags"]:
+            output = run_remote("docker info --format '{{.Swarm.ControlAvailable}}'", peer_data["HostName"])
+            if output.strip() == "true":
+                managers.add(peer_data["HostName"])
     return managers
 
 def get_current_tailnet_suffic():
